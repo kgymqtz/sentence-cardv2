@@ -3,79 +3,96 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>句韵 · Aesthetic English Card Maker</title>
+<title>句韵 · Aesthetic Card Maker</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Cinzel:wght@400;500&family=Playfair+Display:ital,wght@0,400;1,400&family=DM+Serif+Display:ital@0;1&family=Libre+Baskerville:ital@0;1&family=Noto+Serif+SC:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Cinzel:wght@400;500&family=Playfair+Display:ital,wght@0,400;1,400&family=Noto+Serif+SC:wght@300;400&display=swap" rel="stylesheet">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
-/* ─── UI THEME: FILM (暗调胶片) ─── */
-body.ui-film {
-  --bg: #09090f;
-  --panel: #10101a;
-  --border: #1e1e2c;
-  --accent: #c8a86a;
-  --accent-dim: #6a5530;
-  --accent-soft: rgba(200,168,106,0.05);
-  --text: #e2ddd4;
-  --text-dim: #4e4e66;
-  --input-bg: #14141e;
-  --preview-bg: #040408;
-  --phone-frame: #0c0c18;
-  --phone-ring1: #1c1c2c;
-  --phone-ring2: #080812;
-}
-
+/* ─── UI THEME: APPLE + CLAUDE (极简高级感) ─── */
 body {
+  --bg: #f9f9f8;
+  --panel: #ffffff;
+  --border: #e2e2e0;
+  --accent: #da7b5f; /* Claude 风格陶土橘色 */
+  --accent-dim: #c26950;
+  --accent-soft: rgba(218, 123, 95, 0.08);
+  --text: #2d2b2a;
+  --text-dim: #8b8987;
+  --input-bg: #fafafa;
+  --preview-bg: #ebebe9;
+  
+  --device-silver: #f0f0f2;
+  --device-border: #d2d2d7;
+  --device-screen-bg: #111111;
+
   background: var(--bg);
   color: var(--text);
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   height: 100vh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
 
+/* 顶部导航 */
 header {
-  height: 54px;
+  height: 56px;
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
   padding: 0 28px;
   gap: 16px;
-  flex-shrink: 0;
   background: var(--panel);
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+  z-index: 10;
 }
-.logo-main { font-family: 'Cinzel', serif; font-size: 19px; letter-spacing: 0.35em; color: var(--accent); }
-.logo-sep { width: 1px; height: 20px; background: var(--border); margin: 0 4px; }
-.logo-sub { font-size: 11px; letter-spacing: 0.18em; color: var(--text-dim); text-transform: uppercase; }
+.logo-main { font-family: 'Cinzel', serif; font-size: 18px; letter-spacing: 0.3em; color: var(--text); font-weight: 500;}
+.logo-sep { width: 1px; height: 18px; background: var(--border); margin: 0 4px; }
+.logo-sub { font-size: 11px; letter-spacing: 0.15em; color: var(--text-dim); text-transform: uppercase; }
 
+/* 主体布局 */
 .main {
   flex: 1;
-  display: grid;
-  grid-template-columns: 360px 6px 1fr; /* 左侧面板稍微调宽一点 */
+  display: flex; /* 改用 Flex 以配合灵活拖拽 */
   overflow: hidden;
 }
 .controls {
-  padding: 18px 20px;
+  width: 360px; /* 默认宽度 */
+  min-width: 280px;
+  max-width: 600px;
+  padding: 24px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
   background: var(--panel);
 }
-.controls::-webkit-scrollbar { width: 3px; }
+.controls::-webkit-scrollbar { width: 4px; }
 .controls::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
-.resizer { background: var(--border); cursor: col-resize; position: relative; }
+/* 拖拽条 */
+.resizer {
+  width: 6px;
+  background: var(--border);
+  cursor: col-resize;
+  position: relative;
+  transition: background 0.2s;
+  z-index: 10;
+}
 .resizer:hover, .resizer.dragging { background: var(--accent); }
+.resizer::after {
+  content: ''; position: absolute; left: 2px; top: 50%; transform: translateY(-50%);
+  width: 2px; height: 24px; background: var(--text-dim); opacity: 0.4; border-radius: 2px;
+}
 
+/* 控件样式 */
 .lbl {
-  font-family: 'Cinzel', serif;
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  color: var(--accent);
-  margin-bottom: 7px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 8px;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -87,91 +104,124 @@ textarea, input[type=text], select {
   background: var(--input-bg);
   border: 1px solid var(--border);
   color: var(--text);
-  padding: 10px 12px;
-  border-radius: 7px;
+  padding: 12px;
+  border-radius: 8px;
   font-family: 'Cormorant Garamond', serif;
   font-size: 15px;
-  line-height: 1.65;
+  line-height: 1.6;
   resize: none;
+  transition: all 0.2s;
 }
-textarea:focus, select:focus { outline: none; border-color: var(--accent-dim); }
+textarea:focus, select:focus { outline: none; border-color: var(--accent); background: #fff; box-shadow: 0 0 0 3px var(--accent-soft); }
 
 #enText { min-height: 80px; }
 #cnText { min-height: 50px; font-family: 'Noto Serif SC', serif; font-size: 14px;}
 
-.theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+/* 按钮组与卡片 */
+.btn-group { display: flex; gap: 6px; }
+.btn-toggle {
+  flex: 1; background: var(--input-bg); border: 1px solid var(--border); color: var(--text-dim);
+  padding: 8px; border-radius: 6px; cursor: pointer; font-size: 12px; transition: all 0.2s;
+}
+.btn-toggle:hover { border-color: var(--text-dim); color: var(--text); }
+.btn-toggle.active { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); font-weight: 500; }
+
+.theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .theme-card {
-  background: var(--input-bg);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 10px 8px;
-  cursor: pointer;
-  text-align: center;
-  color: var(--text-dim);
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
+  background: var(--input-bg); border: 1px solid var(--border); border-radius: 10px;
+  padding: 12px 8px; cursor: pointer; text-align: center; color: var(--text-dim);
+  display: flex; flex-direction: column; gap: 4px; transition: all 0.2s;
 }
-.theme-card:hover { border-color: var(--accent-dim); color: var(--text); }
-.theme-card.active { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.theme-card:hover { border-color: var(--text-dim); color: var(--text); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+.theme-card.active { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); box-shadow: 0 2px 12px var(--accent-soft); }
 
-.slider-row { display: flex; align-items: center; gap: 10px; }
-.slider-row input[type=range] { flex: 1; accent-color: var(--accent); cursor: pointer; }
-.sval { font-family: 'Cinzel', serif; font-size: 12px; color: var(--text); min-width: 42px; text-align: right; }
+/* 滑块与其他 */
+.slider-row { display: flex; align-items: center; gap: 12px; }
+.slider-row input[type=range] { flex: 1; accent-color: var(--accent); cursor: pointer; height: 4px; }
+.sval { font-variant-numeric: tabular-nums; font-size: 12px; color: var(--text-dim); min-width: 36px; text-align: right; }
 
-.file-row { display: flex; gap: 6px; align-items: center; }
+.file-row { display: flex; gap: 8px; align-items: center; }
 .file-label {
-  flex: 1;
-  background: var(--input-bg);
-  border: 1px dashed var(--border);
-  color: var(--text-dim);
-  padding: 10px;
-  border-radius: 7px;
-  cursor: pointer;
-  font-size: 12px;
-  text-align: center;
+  flex: 1; background: var(--input-bg); border: 1px dashed var(--border); color: var(--text-dim);
+  padding: 10px; border-radius: 8px; cursor: pointer; font-size: 12px; text-align: center; transition: all 0.2s;
 }
-.file-label:hover { border-color: var(--accent); color: var(--accent); }
+.file-label:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
 .file-label input { display: none; }
-.file-clear { background: var(--input-bg); border: 1px solid var(--border); color: var(--text-dim); padding: 9px 12px; border-radius: 7px; cursor: pointer; }
+.file-clear { background: var(--input-bg); border: 1px solid var(--border); color: var(--text-dim); padding: 9px 12px; border-radius: 8px; cursor: pointer; }
 
-.actions { display: flex; flex-direction: column; gap: 8px; padding-top: 10px; padding-bottom: 20px; }
-.btn-row { display: flex; gap: 6px; }
+/* 底部操作区 */
+.actions { display: flex; flex-direction: column; gap: 10px; padding-top: 10px; padding-bottom: 20px; }
 .btn-pre, .btn-shot, .btn-exp {
-  flex: 1;
-  background: var(--input-bg);
-  border: 1px solid var(--border);
-  color: var(--text);
-  padding: 12px;
-  border-radius: 7px;
-  cursor: pointer;
-  font-family: 'Cinzel', serif;
-  font-size: 11px;
-  letter-spacing: 0.1em;
+  flex: 1; background: var(--panel); border: 1px solid var(--border); color: var(--text);
+  padding: 12px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.2s;
 }
-.btn-pre:hover, .btn-shot:hover { border-color: var(--accent); color: var(--accent); }
-.btn-exp { background: linear-gradient(135deg, #c8a86a 0%, #8c6030 100%); color: #000; font-weight: bold; border: none;}
-.btn-exp:hover { opacity: 0.9; }
+.btn-pre:hover, .btn-shot:hover { border-color: var(--text); }
+.btn-exp { background: var(--text); color: #fff; border: none; }
+.btn-exp:hover { background: #000; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
 
+/* 右侧预览区 (苹果设备风) */
 .preview-area {
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   background: var(--preview-bg);
   position: relative;
+  transition: all 0.3s ease;
 }
-.phone-frame {
-  width: 320px;
-  background: var(--phone-frame);
-  border-radius: 38px;
+
+/* 动态设备外框 */
+.device-frame {
+  background: var(--device-silver);
   padding: 12px;
-  box-shadow: 0 0 0 2px var(--phone-ring1), 0 20px 60px rgba(0,0,0,0.8);
+  box-shadow: 
+    inset 0 0 0 1px #fff,
+    0 0 0 1px var(--device-border), 
+    0 24px 48px rgba(0,0,0,0.12);
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
 }
-#preview { display: block; width: 100%; aspect-ratio: 9/16; border-radius: 28px; }
+
+/* 手机竖屏状态 */
+.device-frame.mode-mobile {
+  width: 320px;
+  height: 568px; /* 16:9 比例衍生 */
+  border-radius: 36px;
+}
+.device-frame.mode-mobile::before { /* 刘海屏/灵动岛 */
+  content: ''; position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
+  width: 80px; height: 20px; background: #000; border-radius: 10px; z-index: 10;
+}
+
+/* 电脑横屏状态 */
+.device-frame.mode-desktop {
+  width: 640px;
+  height: 360px; /* 16:9 */
+  border-radius: 16px;
+  padding: 8px 8px 24px 8px; /* 底部留出下巴 */
+}
+.device-frame.mode-desktop::after { /* Mac 底座装饰 */
+  content: ''; position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%);
+  width: 120px; height: 12px; background: #d2d2d7; border-radius: 0 0 6px 6px;
+}
+
+#preview {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--device-screen-bg);
+  border-radius: 24px;
+  object-fit: cover;
+  transition: border-radius 0.4s;
+}
+.device-frame.mode-desktop #preview { border-radius: 8px; }
 
 </style>
 </head>
-<body class="ui-film">
+<body>
 
 <header>
   <span class="logo-main">句 韵</span>
@@ -181,6 +231,14 @@ textarea:focus, select:focus { outline: none; border-color: var(--accent-dim); }
 
 <div class="main" id="main">
   <div class="controls" id="controls">
+
+    <div>
+      <div class="lbl">画面比例 (Device)</div>
+      <div class="btn-group">
+        <button class="btn-toggle active" id="ratioMobile" onclick="setRatio('mobile')">📱 手机竖屏 9:16</button>
+        <button class="btn-toggle" id="ratioDesktop" onclick="setRatio('desktop')">💻 电脑横屏 16:9</button>
+      </div>
+    </div>
 
     <div>
       <div class="lbl">英文文案</div>
@@ -195,22 +253,34 @@ textarea:focus, select:focus { outline: none; border-color: var(--accent-dim); }
       <div class="lbl">背景风格 (Themes)</div>
       <div class="theme-grid">
         <button class="theme-card active" onclick="setTheme('rain',this)">
-          <div style="font-size: 20px;">🌧️</div><div>玻璃车窗雨滴</div>
+          <div style="font-size: 20px;">🌧️</div><div style="font-size: 11px;">玻璃车窗雨滴</div>
         </button>
         <button class="theme-card" onclick="setTheme('ocean',this)">
-          <div style="font-size: 20px;">🌅</div><div>落日橘海倒影</div>
+          <div style="font-size: 20px;">🌅</div><div style="font-size: 11px;">落日橘海倒影</div>
         </button>
         <button class="theme-card" onclick="setTheme('stars',this)">
-          <div style="font-size: 20px;">✨</div><div>深邃静谧星空</div>
+          <div style="font-size: 20px;">✨</div><div style="font-size: 11px;">深邃静谧星空</div>
         </button>
         <button class="theme-card" onclick="setTheme('pixel',this)">
-          <div style="font-size: 20px;">🐱</div><div>像素呆萌小猫</div>
+          <div style="font-size: 20px;">🐱</div><div style="font-size: 11px;">像素呆萌小猫</div>
         </button>
       </div>
     </div>
 
     <div>
-      <div class="lbl">📷 上传自定义背景图</div>
+      <div class="lbl">文字动画效果 (Animations)</div>
+      <div class="btn-group" style="margin-bottom: 8px;">
+        <button class="btn-toggle active" onclick="setAnim('type',this)">⌨️ 打字机</button>
+        <button class="btn-toggle" onclick="setAnim('fade',this)">◎ 缓慢淡入</button>
+        <button class="btn-toggle" onclick="setAnim('rise',this)">↑ 唯美浮现</button>
+      </div>
+      <label style="font-size: 12px; color: var(--text-dim); display: flex; align-items: center; gap: 6px; cursor: pointer;">
+        <input type="checkbox" id="soundToggle" checked> 开启打字机哒哒音效
+      </label>
+    </div>
+
+    <div>
+      <div class="lbl">📷 自定义背景图</div>
       <div class="file-row">
         <label class="file-label">
           <span id="fileLabelText">点击上传你的图片或截图</span>
@@ -218,7 +288,7 @@ textarea:focus, select:focus { outline: none; border-color: var(--accent-dim); }
         </label>
         <button class="file-clear" id="bgClearBtn">清除</button>
       </div>
-      <div class="slider-row" style="margin-top:5px;">
+      <div class="slider-row" style="margin-top:10px;">
         <span style="font-size:12px; color:var(--text-dim);">背景图透明度:</span>
         <input type="range" min="0" max="100" value="100" id="bgAlpha">
         <span class="sval" id="bgAlphaVal">100%</span>
@@ -234,26 +304,26 @@ textarea:focus, select:focus { outline: none; border-color: var(--accent-dim); }
       </select>
       <div class="file-row">
         <span style="font-size:12px; color:var(--text-dim);">文字颜色:</span>
-        <input type="color" id="fontColor" value="#ffffff" style="width:100%; height:35px; border-radius:5px; cursor:pointer;">
+        <input type="color" id="fontColor" value="#ffffff" style="width:100%; height:36px; border-radius:6px; cursor:pointer; border: 1px solid var(--border);">
       </div>
     </div>
 
     <div>
       <div class="lbl">📏 字体大小调整</div>
       <div class="slider-row">
-        <span style="font-size:12px; color:var(--text-dim); width:60px;">英文大小</span>
+        <span style="font-size:12px; color:var(--text-dim); width:50px;">英文</span>
         <input type="range" min="15" max="60" value="26" id="enSize">
         <span class="sval" id="enSizeVal">26</span>
       </div>
       <div class="slider-row" style="margin-top: 8px;">
-        <span style="font-size:12px; color:var(--text-dim); width:60px;">中文大小</span>
+        <span style="font-size:12px; color:var(--text-dim); width:50px;">中文</span>
         <input type="range" min="10" max="50" value="18" id="cnSize">
         <span class="sval" id="cnSizeVal">18</span>
       </div>
     </div>
 
     <div>
-      <div class="lbl">↕️ 文字上下位置 (排版)</div>
+      <div class="lbl">↕️ 文字垂直位置</div>
       <div class="slider-row">
         <input type="range" min="10" max="90" value="45" id="yPos">
         <span class="sval" id="yPosVal">45%</span>
@@ -261,12 +331,11 @@ textarea:focus, select:focus { outline: none; border-color: var(--accent-dim); }
     </div>
     
     <div>
-      <div class="lbl">🌫️ 文字背后的模糊毛玻璃框</div>
+      <div class="lbl">🌫️ 模糊毛玻璃底框</div>
       <div class="slider-row">
         <input type="range" min="0" max="100" value="0" id="frost">
         <span class="sval" id="frostVal">0%</span>
       </div>
-      <span style="font-size:10px; color:var(--text-dim);">*如果字看不清，可以把毛玻璃框调大</span>
     </div>
 
     <div>
@@ -279,8 +348,8 @@ textarea:focus, select:focus { outline: none; border-color: var(--accent-dim); }
 
     <div class="actions">
       <div class="btn-row">
-        <button class="btn-pre" onclick="restart()">▶ 重新预览动画</button>
-        <button class="btn-shot" onclick="shootImage()">📸 保存为图片</button>
+        <button class="btn-pre" onclick="restart()">▶ 播放预览</button>
+        <button class="btn-shot" onclick="shootImage()">📸 存为图片</button>
       </div>
       <button class="btn-exp" id="expBtn" onclick="doExport()">生成动态视频 (.webm)</button>
     </div>
@@ -289,56 +358,126 @@ textarea:focus, select:focus { outline: none; border-color: var(--accent-dim); }
   <div class="resizer" id="resizer"></div>
 
   <div class="preview-area">
-    <div class="phone-frame">
+    <div class="device-frame mode-mobile" id="deviceFrame">
       <canvas id="preview" width="540" height="960"></canvas>
     </div>
   </div>
 </div>
 
 <script>
+// ================= 核心状态变量 =================
 const cv = document.getElementById('preview');
 const cx = cv.getContext('2d');
-const W = 540, H = 960;
-
 const off = document.createElement('canvas');
-off.width = W; off.height = H;
 const ox = off.getContext('2d');
 
+let W = 540, H = 960; // 默认竖屏尺寸
 let theme = 'rain';
+let animType = 'type'; // type, fade, rise
 let raf = null, t0 = null;
 let customBg = null;
+let lastPrintedChars = 0; // 用于打字机音效判定
 
-// ================= 数据：城市雨天车窗 =================
-// 远处的城市灯光 (失焦散景 Bokeh)
+// 音频上下文 (懒加载，需要用户交互触发)
+let audioCtx = null;
+
+// ================= 画布尺寸与设备切换 =================
+function setRatio(mode) {
+  document.getElementById('ratioMobile').classList.toggle('active', mode === 'mobile');
+  document.getElementById('ratioDesktop').classList.toggle('active', mode === 'desktop');
+  
+  const frame = document.getElementById('deviceFrame');
+  if (mode === 'desktop') {
+    frame.className = 'device-frame mode-desktop';
+    W = 960; H = 540; // 画布设为横屏比例
+  } else {
+    frame.className = 'device-frame mode-mobile';
+    W = 540; H = 960; // 画布设为竖屏比例
+  }
+  cv.width = W; cv.height = H;
+  off.width = W; off.height = H;
+  restart();
+}
+
+// ================= 拖拽改变左侧宽度 =================
+(function initResizer() {
+  const resizer = document.getElementById('resizer');
+  const controls = document.getElementById('controls');
+  let isResizing = false;
+
+  resizer.addEventListener('mousedown', (e) => {
+    isResizing = true;
+    resizer.classList.add('dragging');
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none'; // 防止拖拽时选中文本
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (!isResizing) return;
+    // 计算左侧宽度 (最小280，最大600)
+    let newWidth = e.clientX;
+    if (newWidth < 280) newWidth = 280;
+    if (newWidth > 600) newWidth = 600;
+    controls.style.width = `${newWidth}px`;
+  });
+
+  document.addEventListener('mouseup', () => {
+    if (isResizing) {
+      isResizing = false;
+      resizer.classList.remove('dragging');
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    }
+  });
+})();
+
+// ================= 打字机音效合成 =================
+function playTypeSound() {
+  if(!document.getElementById('soundToggle').checked) return;
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  
+  // 模拟机械打字机的短促敲击声
+  osc.type = 'triangle'; 
+  osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.03);
+  
+  gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.03);
+  
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.start();
+  osc.stop(audioCtx.currentTime + 0.04);
+}
+
+// ================= 数据定义 =================
 const bokehLights = [
-  {x: W*0.2, y: H*0.6, r: 40, col: 'rgba(255, 50, 50, 0.7)'},   // 红色尾灯
-  {x: W*0.8, y: H*0.55, r: 50, col: 'rgba(255, 60, 60, 0.6)'},  // 红色尾灯
-  {x: W*0.4, y: H*0.5, r: 35, col: 'rgba(255, 200, 100, 0.5)'}, // 黄色路灯
-  {x: W*0.6, y: H*0.65, r: 60, col: 'rgba(200, 220, 255, 0.4)'},// 白色车头灯
-  {x: W*0.9, y: H*0.4, r: 30, col: 'rgba(255, 255, 200, 0.5)'}  // 远景灯
+  {x: 0.2, y: 0.6, r: 40, col: 'rgba(255, 50, 50, 0.7)'},   
+  {x: 0.8, y: 0.55, r: 50, col: 'rgba(255, 60, 60, 0.6)'},  
+  {x: 0.4, y: 0.5, r: 35, col: 'rgba(255, 200, 100, 0.5)'}, 
+  {x: 0.6, y: 0.65, r: 60, col: 'rgba(200, 220, 255, 0.4)'}
 ];
-// 静态水珠 (散落在玻璃上)
-const staticDrops = Array.from({length: 150}, () => ({
-  x: Math.random() * W, y: Math.random() * H, r: 1 + Math.random() * 3
+const staticDrops = Array.from({length: 120}, () => ({
+  x: Math.random(), y: Math.random(), r: 1 + Math.random() * 2
 }));
-// 动态滑落的水滴
-const movingDrops = Array.from({length: 20}, () => ({
-  x: Math.random() * W, y: Math.random() * H, r: 3 + Math.random() * 5,
-  speed: 2 + Math.random() * 4, trail: []
+// 雨滴改得更慢、更长、更自然
+const movingDrops = Array.from({length: 15}, () => ({
+  x: Math.random(), y: Math.random(), r: 2 + Math.random() * 3,
+  speed: 0.3 + Math.random() * 0.8, trail: [] 
 }));
 
-// ================= 数据：日落海霞 =================
 const waves = Array.from({length: 12}, (_, i) => ({
-  y: H*0.55 + i*15, amp: 2 + i*0.8, freq: 0.015 + i*0.005, phase: Math.random()*Math.PI*2
+  yOffset: i*15, amp: 2 + i*0.8, freq: 0.015 + i*0.005, phase: Math.random()*Math.PI*2
+}));
+const stars = Array.from({length:150},()=>({
+  x:Math.random(),y:Math.random(), r:0.5+Math.random()*1.5, ph:Math.random()*Math.PI*2, spd:0.02+Math.random()*0.04
 }));
 
-// ================= 数据：星空 =================
-const stars = Array.from({length:200},()=>({
-  x:Math.random()*W,y:Math.random()*H, r:0.5+Math.random()*2, ph:Math.random()*Math.PI*2, spd:0.02+Math.random()*0.05
-}));
-
-// ================= 数据：可爱像素小猫 =================
-// 调色盘: 0=空, 1=黑边, 2=白身, 3=橘色花纹, 4=粉红耳朵/腮红, 5=眼睛
+// 可爱小猫
 const CAT = [
   [0,0,1,1,0,0,0,0,0,1,1,0,0],
   [0,1,2,4,1,0,0,0,1,4,3,1,0],
@@ -353,268 +492,156 @@ const CAT = [
   [1,3,2,2,1,2,2,2,1,2,2,3,1],
   [0,1,1,1,0,1,1,1,0,1,1,1,0]
 ];
-const catPalette = {
-  1:'#2b221e', // 描边深色
-  2:'#ffffff', // 身体白
-  3:'#f4a261', // 橘色花纹
-  4:'#ffb4a2', // 粉色
-  5:'#111111'  // 眼睛
-};
+const catPalette = { 1:'#2b221e', 2:'#ffffff', 3:'#f4a261', 4:'#ffb4a2', 5:'#111111' };
 
 
-// ─── 画背景：城市车窗雨滴 ───
+// ================= 背景绘制逻辑 =================
+
 function drawRain(t) {
-  // 深蓝色压抑背景
   const bg = cx.createLinearGradient(0, 0, 0, H);
-  bg.addColorStop(0, '#1a1f2b');
-  bg.addColorStop(0.5, '#0d1118');
-  bg.addColorStop(1, '#050608');
-  cx.fillStyle = bg;
-  cx.fillRect(0, 0, W, H);
+  bg.addColorStop(0, '#1a1f2b'); bg.addColorStop(0.5, '#0d1118'); bg.addColorStop(1, '#050608');
+  cx.fillStyle = bg; cx.fillRect(0, 0, W, H);
 
-  // 画远处的城市灯光 Bokeh (强模糊)
-  cx.save();
-  cx.filter = 'blur(20px)';
+  cx.save(); cx.filter = 'blur(25px)';
   bokehLights.forEach(b => {
-    // 让灯光随时间微微晃动，模拟车在开或者雨水扭曲
-    const wx = b.x + Math.sin(t*0.001 + b.y)*15;
-    cx.beginPath();
-    cx.arc(wx, b.y, b.r, 0, Math.PI*2);
-    cx.fillStyle = b.col;
-    cx.fill();
+    const wx = b.x*W + Math.sin(t*0.0005 + b.y*H)*20; // 极其缓慢的散景移动
+    cx.beginPath(); cx.arc(wx, b.y*H, b.r* (W/540), 0, Math.PI*2); cx.fillStyle = b.col; cx.fill();
   });
   cx.restore();
 
-  // 玻璃质感底色
-  cx.fillStyle = 'rgba(20, 30, 40, 0.1)';
-  cx.fillRect(0, 0, W, H);
+  cx.fillStyle = 'rgba(20, 30, 40, 0.15)'; cx.fillRect(0, 0, W, H);
 
-  // 画静态小水珠
-  staticDrops.forEach(d => {
-    drawDroplet(d.x, d.y, d.r);
-  });
+  staticDrops.forEach(d => drawDroplet(d.x*W, d.y*H, d.r));
 
-  // 画动态滑落的大水滴
   movingDrops.forEach(d => {
-    // 记录拖尾
-    d.trail.push({x: d.x, y: d.y});
-    if(d.trail.length > 8) d.trail.shift();
+    d.trail.push({x: d.x*W, y: d.y*H});
+    if(d.trail.length > 15) d.trail.shift(); // 拖尾拉长
     
-    // 向下流动并微微左右蜿蜒
-    d.y += d.speed;
-    d.x += Math.sin(d.y * 0.05) * 0.5;
+    // 极其缓慢的下滑速度，并且有停顿感 (利用sin)
+    const currentSpeed = d.speed * (0.5 + Math.sin(t*0.002 + d.x*100)*0.5); 
+    d.y += currentSpeed / H;
+    d.x += Math.sin(d.y * 50) * 0.0002; // 微小蜿蜒
 
-    if(d.y > H + 20) {
-      d.y = -20;
-      d.x = Math.random() * W;
-      d.trail = [];
-      d.speed = 2 + Math.random() * 4;
+    if(d.y > 1.05) {
+      d.y = -0.05; d.x = Math.random(); d.trail = [];
     }
 
-    // 画拖尾水痕
     if(d.trail.length > 0) {
-      cx.beginPath();
-      cx.moveTo(d.trail[0].x, d.trail[0].y);
+      cx.beginPath(); cx.moveTo(d.trail[0].x, d.trail[0].y);
       for(let i=1; i<d.trail.length; i++) cx.lineTo(d.trail[i].x, d.trail[i].y);
-      cx.strokeStyle = 'rgba(150, 180, 200, 0.2)';
-      cx.lineWidth = d.r;
-      cx.lineCap = 'round';
-      cx.stroke();
+      cx.strokeStyle = 'rgba(150, 180, 200, 0.15)'; cx.lineWidth = d.r; cx.lineCap = 'round'; cx.stroke();
     }
-    // 画水滴本体
-    drawDroplet(d.x, d.y, d.r * 1.2);
+    drawDroplet(d.x*W, d.y*H, d.r * 1.2);
   });
 }
 
 function drawDroplet(x, y, r) {
-  // 水滴暗部（折射背景）
-  cx.beginPath();
-  cx.arc(x, y, r, 0, Math.PI*2);
-  cx.fillStyle = 'rgba(10, 15, 20, 0.4)';
-  cx.fill();
-  // 边缘微光
-  cx.lineWidth = 0.5;
-  cx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
-  cx.stroke();
-  // 顶部强烈高光
-  cx.beginPath();
-  cx.arc(x - r*0.3, y - r*0.3, r*0.25, 0, Math.PI*2);
-  cx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-  cx.fill();
+  cx.beginPath(); cx.arc(x, y, r, 0, Math.PI*2); cx.fillStyle = 'rgba(5, 10, 15, 0.3)'; cx.fill();
+  cx.beginPath(); cx.arc(x - r*0.3, y - r*0.3, r*0.3, 0, Math.PI*2); cx.fillStyle = 'rgba(255, 255, 255, 0.7)'; cx.fill();
 }
 
-
-// ─── 画背景：绝美落日海霞 ───
 function drawOcean(t) {
   const horizon = H * 0.55;
-  // 天空晚霞
   const sky = cx.createLinearGradient(0, 0, 0, horizon);
-  sky.addColorStop(0, '#2b1b3d'); // 顶部深紫
-  sky.addColorStop(0.4, '#8c3a59'); // 中间洋红
-  sky.addColorStop(0.7, '#e06c75'); // 橘红
-  sky.addColorStop(1, '#f5c990'); // 地平线金黄
-  cx.fillStyle = sky;
-  cx.fillRect(0, 0, W, horizon);
+  sky.addColorStop(0, '#2b1b3d'); sky.addColorStop(0.4, '#8c3a59'); sky.addColorStop(0.7, '#e06c75'); sky.addColorStop(1, '#f5c990');
+  cx.fillStyle = sky; cx.fillRect(0, 0, W, horizon);
 
-  // 耀眼的太阳
-  const sunX = W * 0.5;
-  const sunY = horizon - 40;
-  cx.beginPath();
-  cx.arc(sunX, sunY, 35, 0, Math.PI*2);
-  cx.fillStyle = '#fffae6';
-  cx.shadowBlur = 40;
-  cx.shadowColor = '#ffc04d';
-  cx.fill();
-  cx.shadowBlur = 0; // 重置
+  const sunX = W * 0.5, sunY = horizon - 40;
+  cx.beginPath(); cx.arc(sunX, sunY, 35, 0, Math.PI*2); cx.fillStyle = '#fffae6';
+  cx.shadowBlur = 40; cx.shadowColor = '#ffc04d'; cx.fill(); cx.shadowBlur = 0;
 
-  // 宁静暗海
   const sea = cx.createLinearGradient(0, horizon, 0, H);
-  sea.addColorStop(0, '#4a2545'); 
-  sea.addColorStop(0.3, '#2d1b4e');
-  sea.addColorStop(1, '#0f0c29');
-  cx.fillStyle = sea;
-  cx.fillRect(0, horizon, W, H - horizon);
+  sea.addColorStop(0, '#4a2545'); sea.addColorStop(0.3, '#2d1b4e'); sea.addColorStop(1, '#0f0c29');
+  cx.fillStyle = sea; cx.fillRect(0, horizon, W, H - horizon);
 
-  // 海面波光 (动态倒影)
   waves.forEach((w, i) => {
-    cx.beginPath();
-    cx.strokeStyle = `rgba(255, 200, 120, ${0.4 - i*0.03})`;
-    cx.lineWidth = 1.5;
+    cx.beginPath(); cx.strokeStyle = `rgba(255, 200, 120, ${0.4 - i*0.03})`; cx.lineWidth = 1.5;
+    const wy = horizon + w.yOffset;
     for(let x = 0; x <= W; x += 5) {
       const yOffset = Math.sin(x * w.freq + t * 0.002 + w.phase) * w.amp;
-      if (x === 0) cx.moveTo(x, w.y + yOffset);
-      else cx.lineTo(x, w.y + yOffset);
+      if (x === 0) cx.moveTo(x, wy + yOffset); else cx.lineTo(x, wy + yOffset);
     }
     cx.stroke();
-    // 太阳中间直射的波光碎金
-    const reflectionWidth = 80 - i*4;
-    const refX = sunX - reflectionWidth/2 + Math.sin(t*0.003 + i)*10;
-    cx.fillStyle = `rgba(255, 240, 180, ${0.6 - i*0.04})`;
-    cx.fillRect(refX, w.y - 1, reflectionWidth, 2);
+    const refW = 80 - i*4; const refX = sunX - refW/2 + Math.sin(t*0.002 + i)*10;
+    cx.fillStyle = `rgba(255, 240, 180, ${0.5 - i*0.03})`; cx.fillRect(refX, wy - 1, refW, 2);
   });
 }
 
-
-// ─── 画背景：星空 ───
 function drawStars(t) {
   const bg = cx.createLinearGradient(0,0,0,H);
-  bg.addColorStop(0,'#050914');
-  bg.addColorStop(1,'#1a1525');
+  bg.addColorStop(0,'#050914'); bg.addColorStop(1,'#1a1525');
   cx.fillStyle=bg; cx.fillRect(0,0,W,H);
-
   stars.forEach(s=>{
-    s.ph+=s.spd;
-    const a=0.3+Math.sin(s.ph)*0.7;
-    cx.globalAlpha=Math.max(0,a); 
-    cx.fillStyle='#fff';
-    cx.beginPath(); cx.arc(s.x,s.y,s.r,0,Math.PI*2); cx.fill();
+    s.ph+=s.spd; const a=0.3+Math.sin(s.ph)*0.7;
+    cx.globalAlpha=Math.max(0,a); cx.fillStyle='#fff';
+    cx.beginPath(); cx.arc(s.x*W, s.y*H, s.r, 0, Math.PI*2); cx.fill();
   });
   cx.globalAlpha=1;
 }
 
-
-// ─── 画背景：像素猫咪 ───
 function drawPixel(t) {
   const bg = cx.createLinearGradient(0,0,0,H);
-  bg.addColorStop(0,'#a3b18a'); // 采用你图片里的治愈绿底色
-  bg.addColorStop(1,'#dad7cd');
-  cx.fillStyle=bg;
-  cx.fillRect(0,0,W,H);
+  bg.addColorStop(0,'#a3b18a'); bg.addColorStop(1,'#dad7cd');
+  cx.fillStyle=bg; cx.fillRect(0,0,W,H);
 
-  const sc = 18; // 像素块大小放大
-  const cW = CAT[0].length * sc;
-  const cH = CAT.length * sc;
-  const cX = (W-cW)/2;
-  const cY = H*0.65 + Math.sin(t*0.002)*10; // 呼吸浮动
+  const sc = Math.min(W, H) * 0.035; 
+  const cW = CAT[0].length * sc, cH = CAT.length * sc;
+  const cX = (W-cW)/2, cY = H*0.65 + Math.sin(t*0.002)*10;
 
-  // 画猫咪阴影
-  cx.fillStyle = 'rgba(0,0,0,0.15)';
-  cx.beginPath();
-  cx.ellipse(cX + cW/2, cY + cH, cW*0.4, 10, 0, 0, Math.PI*2);
-  cx.fill();
+  cx.fillStyle = 'rgba(0,0,0,0.1)'; cx.beginPath();
+  cx.ellipse(cX + cW/2, cY + cH, cW*0.4, 10, 0, 0, Math.PI*2); cx.fill();
 
-  // 逐个像素画猫
   CAT.forEach((row, ry) => row.forEach((px, rx) => {
     if(px === 0) return;
-    cx.fillStyle = catPalette[px];
-    cx.fillRect(cX + rx*sc, cY + ry*sc, sc+0.5, sc+0.5); // +0.5防止缝隙
+    cx.fillStyle = catPalette[px]; cx.fillRect(cX + rx*sc, cY + ry*sc, sc+0.5, sc+0.5);
   }));
 }
 
-
-// ─── 绘制自定义上传的图 ───
 function drawCustomBg() {
   if (!customBg) return;
   const alpha = parseInt(document.getElementById('bgAlpha').value)/100;
   if (alpha <= 0) return;
-
-  cx.save();
-  cx.globalAlpha = alpha;
-  const iw = customBg.naturalWidth || customBg.width;
-  const ih = customBg.naturalHeight || customBg.height;
+  cx.save(); cx.globalAlpha = alpha;
+  const iw = customBg.width, ih = customBg.height;
   const ir = iw/ih, cr = W/H;
   let dw, dh, dx, dy;
-  if (ir > cr) {
-    dh = H; dw = H * ir;
-    dx = (W-dw)/2; dy = 0;
-  } else {
-    dw = W; dh = W / ir;
-    dx = 0; dy = (H-dh)/2;
-  }
+  if (ir > cr) { dh = H; dw = H * ir; dx = (W-dw)/2; dy = 0; } 
+  else { dw = W; dh = W / ir; dx = 0; dy = (H-dh)/2; }
   cx.drawImage(customBg, dx, dy, dw, dh);
   cx.restore();
 }
 
-// ─── 毛玻璃衬底 ───
 function drawFrostedBackdrop(bx, by, bw, bh) {
   const frostVal = parseInt(document.getElementById('frost').value);
   if (frostVal <= 0) return;
   const str = frostVal / 100;
 
-  ox.clearRect(0,0,W,H);
-  ox.save();
-  ox.filter = `blur(${5 + str*15}px)`;
-  ox.drawImage(cv, 0, 0);
-  ox.restore();
+  ox.clearRect(0,0,W,H); ox.save(); ox.filter = `blur(${5 + str*15}px)`; ox.drawImage(cv, 0, 0); ox.restore();
 
-  cx.save();
-  cx.beginPath();
-  cx.roundRect(bx, by, bw, bh, 20); // 圆角矩形
-  cx.clip();
-  cx.drawImage(off, 0, 0);
-  cx.fillStyle = `rgba(0,0,0,${str*0.5})`; // 叠加一层暗色增加文字清晰度
-  cx.fill();
-  cx.restore();
+  cx.save(); cx.beginPath(); cx.roundRect(bx, by, bw, bh, 16); cx.clip();
+  cx.drawImage(off, 0, 0); cx.fillStyle = `rgba(0,0,0,${str*0.4})`; cx.fill(); cx.restore();
 }
 
-// ─── 排版与画字 ───
+// ================= 排版与动画 =================
 function drawText(elapsed) {
   const enText = document.getElementById('enText').value;
   const cnText = document.getElementById('cnText').value;
   const fontName = document.getElementById('fontSel').value;
   const textColor = document.getElementById('fontColor').value;
-  
-  // 动态读取用户拖拽的字体大小！
   const enSize = parseInt(document.getElementById('enSize').value);
   const cnSize = parseInt(document.getElementById('cnSize').value);
   
   const enFont = `italic ${enSize}px '${fontName}', serif`;
   const cnFont = `${cnSize}px 'Noto Serif SC', serif`;
-  
-  // 行高也跟着字体大小动态变化
-  const lh = enSize * 1.4;
-  const cnLh = cnSize * 1.6;
-  const maxW = W * 0.8;
+  const lh = enSize * 1.4, cnLh = cnSize * 1.6;
+  const maxW = W * 0.85;
 
-  // 文本自动换行逻辑
   function wrap(text, font) {
-    cx.font = font;
-    const result = [];
+    cx.font = font; const result = [];
     text.split('\n').forEach(raw => {
       let cur = '';
-      for(let char of raw) { // 中英文通用字符级打断，简单粗暴
-        if(cx.measureText(cur + char).width > maxW) { result.push(cur); cur = char; }
-        else cur += char;
+      for(let char of raw) {
+        if(cx.measureText(cur + char).width > maxW) { result.push(cur); cur = char; } else cur += char;
       }
       if(cur) result.push(cur);
     });
@@ -623,55 +650,99 @@ function drawText(elapsed) {
 
   const enLines = enText.trim() ? wrap(enText, enFont) : [];
   const cnLines = cnText.trim() ? wrap(cnText, cnFont) : [];
-  
-  const totalH = enLines.length * lh + (cnLines.length ? 20 + cnLines.length * cnLh : 0);
+  const totalH = enLines.length * lh + (cnLines.length ? 16 + cnLines.length * cnLh : 0);
   const yPosRatio = parseInt(document.getElementById('yPos').value) / 100;
   const startY = H * yPosRatio - totalH / 2;
 
-  // 画毛玻璃背景框
-  drawFrostedBackdrop((W - maxW - 40)/2, startY - enSize, maxW + 40, totalH + enSize + 20);
+  drawFrostedBackdrop((W - maxW - 30)/2, startY - enSize, maxW + 30, totalH + enSize + 20);
 
-  // 动画淡入逻辑
   const dur = parseInt(document.getElementById('dur').value) * 1000;
-  const prog = Math.min(elapsed / (dur * 0.5), 1); // 视频前一半时间用来做文字浮现动画
+  const prog = Math.min(elapsed / (dur * 0.6), 1); // 动画占总时长 60%
 
   cx.textAlign = 'center';
   cx.fillStyle = textColor;
-  // 给文字加一点非常微弱的阴影，确保在亮色背景下也能看清
-  cx.shadowBlur = 8;
-  cx.shadowColor = 'rgba(0,0,0,0.6)';
+  cx.shadowBlur = 6; cx.shadowColor = 'rgba(0,0,0,0.4)';
 
+  // 动画计算逻辑
   let curY = startY;
+  
+  if (animType === 'type') {
+    // ---- 打字机效果 ----
+    const fullText = (enLines.join('') + cnLines.join('')).replace(/\s/g, ''); // 统计所有非空字符
+    const totalChars = fullText.length;
+    const currentVisChars = Math.floor(prog * totalChars);
+    
+    // 触发音效
+    if (currentVisChars > lastPrintedChars && currentVisChars < totalChars) {
+      playTypeSound();
+      lastPrintedChars = currentVisChars;
+    }
 
-  // 画英文
-  cx.font = enFont;
-  enLines.forEach((line, i) => {
-    // 每行延迟一点点出现
-    const lineProg = Math.max(0, Math.min(1, prog * 2 - i * 0.2)); 
-    cx.globalAlpha = lineProg;
-    const floatY = (1 - lineProg) * 15; // 微微往上浮现的效果
-    cx.fillText(line, W/2, curY + floatY);
-    curY += lh;
-  });
+    let charCount = 0;
+    
+    // 渲染英文
+    cx.font = enFont;
+    enLines.forEach(line => {
+      let printedLine = '';
+      for(let char of line) {
+        if(charCount < currentVisChars) printedLine += char;
+        if(char !== ' ') charCount++;
+      }
+      cx.fillText(printedLine, W/2, curY);
+      // 光标闪烁
+      if(charCount === currentVisChars && prog < 1 && Math.floor(elapsed/300)%2===0) {
+        const tw = cx.measureText(printedLine).width;
+        cx.fillText('_', W/2 + tw/2 + 5, curY);
+      }
+      curY += lh;
+    });
 
-  curY += 20; // 中英文间距
+    curY += 16;
+    
+    // 渲染中文
+    cx.font = cnFont;
+    cx.fillStyle = textColor + 'dd';
+    cnLines.forEach(line => {
+      let printedLine = '';
+      for(let char of line) {
+        if(charCount < currentVisChars) printedLine += char;
+        if(char !== ' ') charCount++;
+      }
+      cx.fillText(printedLine, W/2, curY);
+      if(charCount === currentVisChars && prog < 1 && Math.floor(elapsed/300)%2===0) {
+        const tw = cx.measureText(printedLine).width;
+        cx.fillText('_', W/2 + tw/2 + 5, curY);
+      }
+      curY += cnLh;
+    });
 
-  // 画中文
-  cx.font = cnFont;
-  // 中文比英文稍微暗一点/透明一点，增加层次感
-  cx.fillStyle = textColor + 'dd'; 
-  cnLines.forEach((line, i) => {
-    const lineProg = Math.max(0, Math.min(1, prog * 2 - 0.5 - i * 0.2)); 
-    cx.globalAlpha = lineProg;
-    const floatY = (1 - lineProg) * 15;
-    cx.fillText(line, W/2, curY + floatY);
-    curY += cnLh;
-  });
+  } else {
+    // ---- 淡入 / 浮现效果 ----
+    cx.font = enFont;
+    enLines.forEach((line, i) => {
+      const lineProg = Math.max(0, Math.min(1, prog * 1.5 - i * 0.2)); 
+      cx.globalAlpha = lineProg;
+      const floatY = animType === 'rise' ? (1 - lineProg) * 20 : 0;
+      cx.fillText(line, W/2, curY + floatY);
+      curY += lh;
+    });
 
-  cx.globalAlpha = 1;
-  cx.shadowBlur = 0;
+    curY += 16;
+    cx.font = cnFont;
+    cx.fillStyle = textColor + 'dd'; 
+    cnLines.forEach((line, i) => {
+      const lineProg = Math.max(0, Math.min(1, prog * 1.5 - 0.5 - i * 0.2)); 
+      cx.globalAlpha = lineProg;
+      const floatY = animType === 'rise' ? (1 - lineProg) * 20 : 0;
+      cx.fillText(line, W/2, curY + floatY);
+      curY += cnLh;
+    });
+  }
+
+  cx.globalAlpha = 1; cx.shadowBlur = 0;
 }
 
+// ================= 主循环与事件绑定 =================
 function render(ts) {
   if (!t0) t0 = ts;
   const el = ts - t0;
@@ -683,13 +754,19 @@ function render(ts) {
   
   drawCustomBg();
   drawText(el);
-  
   raf = requestAnimationFrame(render);
 }
 
 function restart() {
   if (raf) cancelAnimationFrame(raf);
   t0 = null;
+  lastPrintedChars = 0;
+  
+  // 尝试解锁音频
+  if (document.getElementById('soundToggle').checked && !audioCtx) {
+     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  
   raf = requestAnimationFrame(render);
 }
 
@@ -700,88 +777,58 @@ function setTheme(th, btn) {
   restart();
 }
 
-// ─── 监听各种滑动条的变化并更新UI数值 ───
+function setAnim(an, btn) {
+  animType = an;
+  document.querySelectorAll('.btn-toggle').forEach(b => {
+    if(b.innerText.includes('打字') || b.innerText.includes('淡入') || b.innerText.includes('浮现')) b.classList.remove('active');
+  });
+  btn.classList.add('active');
+  restart();
+}
+
 ['yPos','frost','bgAlpha','enSize','cnSize','dur'].forEach(id => {
   document.getElementById(id).addEventListener('input', e => {
     let suffix = id === 'dur' ? 's' : (id === 'enSize' || id === 'cnSize' ? '' : '%');
     document.getElementById(id + 'Val').textContent = e.target.value + suffix;
-    if(id !== 'dur') restart(); // 时长改变不需要立刻重绘
+    if(id !== 'dur') restart();
   });
 });
 
-document.getElementById('enText').addEventListener('input', restart);
-document.getElementById('cnText').addEventListener('input', restart);
+['enText','cnText','fontColor'].forEach(id => document.getElementById(id).addEventListener('input', restart));
 document.getElementById('fontSel').addEventListener('change', restart);
-document.getElementById('fontColor').addEventListener('input', restart);
 
-// ─── 上传截图/背景功能 ───
 document.getElementById('bgUpload').addEventListener('change', (e) => {
-  const f = e.target.files[0];
-  if (!f) return;
+  const f = e.target.files[0]; if (!f) return;
   const img = new Image();
-  img.onload = () => {
-    customBg = img;
-    document.getElementById('fileLabelText').textContent = '✓ 已上传: ' + f.name.slice(0, 10) + '...';
-    restart();
-  };
+  img.onload = () => { customBg = img; document.getElementById('fileLabelText').textContent = '✓ ' + f.name; restart(); };
   img.src = URL.createObjectURL(f);
 });
+document.getElementById('bgClearBtn').addEventListener('click', () => { customBg = null; document.getElementById('fileLabelText').textContent = '点击上传你的图片或截图'; restart(); });
 
-document.getElementById('bgClearBtn').addEventListener('click', () => {
-  customBg = null;
-  document.getElementById('bgUpload').value = '';
-  document.getElementById('fileLabelText').textContent = '点击上传你的图片或截图';
-  restart();
-});
-
-// ─── 保存图片 ───
 function shootImage() {
-  const url = cv.toDataURL('image/png');
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `Aesthetic_Card_${Date.now()}.png`;
-  a.click();
+  const a = document.createElement('a'); a.href = cv.toDataURL('image/png'); a.download = `Card_${Date.now()}.png`; a.click();
 }
 
-// ─── 导出视频 ───
 function doExport() {
   const dur = parseInt(document.getElementById('dur').value);
   const btn = document.getElementById('expBtn');
-  if (!window.MediaRecorder) {
-    alert('您的浏览器不支持视频录制，请使用 Chrome 或 Edge');
-    return;
-  }
-  btn.disabled = true;
-  restart(); // 重新开始动画以录制
+  if (!window.MediaRecorder) return alert('不支持录制，请使用 Chrome/Edge');
+  btn.disabled = true; restart();
   
-  const stream = cv.captureStream(30); // 30帧
+  const stream = cv.captureStream(30);
   const rec = new MediaRecorder(stream, {mimeType: 'video/webm;codecs=vp9'});
   const chunks = [];
   rec.ondataavailable = e => e.data.size > 0 && chunks.push(e.data);
   rec.onstop = () => {
-    const blob = new Blob(chunks, {type:'video/webm'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `Aesthetic_Video_${Date.now()}.webm`;
-    a.click();
-    btn.disabled = false;
-    btn.textContent = '生成动态视频 (.webm)';
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(chunks, {type:'video/webm'}));
+    a.download = `Video_${Date.now()}.webm`; a.click();
+    btn.disabled = false; btn.textContent = '生成动态视频 (.webm)';
   };
   
-  let sec = 0;
-  const tick = setInterval(() => {
-    btn.textContent = `正在录制... ${++sec} / ${dur} 秒`;
-  }, 1000);
-  
-  rec.start(100);
-  setTimeout(() => {
-    clearInterval(tick);
-    rec.stop();
-  }, dur * 1000);
+  let sec = 0; const tick = setInterval(() => { btn.textContent = `正在录制... ${++sec} / ${dur} 秒`; }, 1000);
+  rec.start(100); setTimeout(() => { clearInterval(tick); rec.stop(); }, dur * 1000);
 }
 
-// 启动渲染
 document.fonts.ready.then(restart);
 </script>
 </body>
