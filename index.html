@@ -3,222 +3,85 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>句韵 · Aesthetic Card Maker</title>
+<title>句韵 Aesthetic Card Maker Pro</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Cinzel:wght@400;500&family=Playfair+Display:ital,wght@0,400;1,400&family=Noto+Serif+SC:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;1,400&family=Cinzel:wght@400;500&family=Playfair+Display:ital,wght@0,400;1,400&family=DM+Serif+Display:ital@0;1&family=Libre+Baskerville:ital@0;1&family=Noto+Serif+SC:wght@300;400&display=swap" rel="stylesheet">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
-/* ─── UI THEME: APPLE + CLAUDE (极简高级感) ─── */
+/* ─── 极简高级 UI THEME: APPLE + CLAUDE ─── */
 body {
-  --bg: #f9f9f8;
+  --bg: #f5f4f1;
   --panel: #ffffff;
-  --border: #e2e2e0;
-  --accent: #da7b5f; /* Claude 风格陶土橘色 */
-  --accent-dim: #c26950;
-  --accent-soft: rgba(218, 123, 95, 0.08);
-  --text: #2d2b2a;
-  --text-dim: #8b8987;
-  --input-bg: #fafafa;
-  --preview-bg: #ebebe9;
-  
+  --border: #e6e4e0;
+  --accent: #d97757; /* 陶土橘 */
+  --accent-soft: rgba(217, 119, 87, 0.08);
+  --text: #2c2b2a;
+  --text-dim: #8c8a88;
+  --input-bg: #faf9f7;
+  --preview-bg: #ebeae6;
   --device-silver: #f0f0f2;
-  --device-border: #d2d2d7;
-  --device-screen-bg: #111111;
-
-  background: var(--bg);
-  color: var(--text);
+  background: var(--bg); color: var(--text);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+  height: 100vh; display: flex; flex-direction: column; overflow: hidden;
 }
 
-/* 顶部导航 */
 header {
-  height: 56px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  padding: 0 28px;
-  gap: 16px;
-  background: var(--panel);
-  flex-shrink: 0;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
-  z-index: 10;
+  height: 56px; border-bottom: 1px solid var(--border); display: flex; align-items: center;
+  padding: 0 28px; gap: 16px; background: var(--panel); flex-shrink: 0; z-index: 10;
 }
-.logo-main { font-family: 'Cinzel', serif; font-size: 18px; letter-spacing: 0.3em; color: var(--text); font-weight: 500;}
+.logo-main { font-family: 'Cinzel', serif; font-size: 18px; letter-spacing: 0.3em; font-weight: 500;}
 .logo-sep { width: 1px; height: 18px; background: var(--border); margin: 0 4px; }
 .logo-sub { font-size: 11px; letter-spacing: 0.15em; color: var(--text-dim); text-transform: uppercase; }
 
-/* 主体布局 */
-.main {
-  flex: 1;
-  display: flex; /* 改用 Flex 以配合灵活拖拽 */
-  overflow: hidden;
-}
-.controls {
-  width: 360px; /* 默认宽度 */
-  min-width: 280px;
-  max-width: 600px;
-  padding: 24px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  background: var(--panel);
-}
+.main { flex: 1; display: flex; overflow: hidden; }
+.controls { width: 380px; min-width: 320px; max-width: 600px; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 24px; background: var(--panel); }
 .controls::-webkit-scrollbar { width: 4px; }
 .controls::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-
-/* 拖拽条 */
-.resizer {
-  width: 6px;
-  background: var(--border);
-  cursor: col-resize;
-  position: relative;
-  transition: background 0.2s;
-  z-index: 10;
-}
+.resizer { width: 6px; background: var(--border); cursor: col-resize; position: relative; transition: background 0.2s; z-index: 10; }
 .resizer:hover, .resizer.dragging { background: var(--accent); }
-.resizer::after {
-  content: ''; position: absolute; left: 2px; top: 50%; transform: translateY(-50%);
-  width: 2px; height: 24px; background: var(--text-dim); opacity: 0.4; border-radius: 2px;
-}
 
-/* 控件样式 */
-.lbl {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text);
-  margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+.lbl { font-size: 12px; font-weight: 500; color: var(--text); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
 .lbl::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-textarea, input[type=text], select {
-  width: 100%;
-  background: var(--input-bg);
-  border: 1px solid var(--border);
-  color: var(--text);
-  padding: 12px;
-  border-radius: 8px;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 15px;
-  line-height: 1.6;
-  resize: none;
-  transition: all 0.2s;
-}
-textarea:focus, select:focus { outline: none; border-color: var(--accent); background: #fff; box-shadow: 0 0 0 3px var(--accent-soft); }
+/* 分段控制器 (Segmented Control) */
+.seg-control { display: flex; background: var(--input-bg); border: 1px solid var(--border); border-radius: 8px; padding: 4px; }
+.seg-btn { flex: 1; background: transparent; border: none; color: var(--text-dim); padding: 8px; border-radius: 6px; cursor: pointer; font-size: 12px; transition: all 0.2s; }
+.seg-btn.active { background: #fff; color: var(--accent); font-weight: 500; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
 
-#enText { min-height: 80px; }
-#cnText { min-height: 50px; font-family: 'Noto Serif SC', serif; font-size: 14px;}
-
-/* 按钮组与卡片 */
-.btn-group { display: flex; gap: 6px; }
-.btn-toggle {
-  flex: 1; background: var(--input-bg); border: 1px solid var(--border); color: var(--text-dim);
-  padding: 8px; border-radius: 6px; cursor: pointer; font-size: 12px; transition: all 0.2s;
-}
-.btn-toggle:hover { border-color: var(--text-dim); color: var(--text); }
-.btn-toggle.active { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); font-weight: 500; }
+textarea, input[type=text], select { width: 100%; background: var(--input-bg); border: 1px solid var(--border); color: var(--text); padding: 12px; border-radius: 8px; font-family: 'Cormorant Garamond', serif; font-size: 15px; line-height: 1.6; resize: none; transition: all 0.2s; }
+textarea:focus, select:focus { outline: none; border-color: var(--accent); background: #fff; }
+#cnText { font-family: 'Noto Serif SC', serif; font-size: 14px;}
 
 .theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.theme-card {
-  background: var(--input-bg); border: 1px solid var(--border); border-radius: 10px;
-  padding: 12px 8px; cursor: pointer; text-align: center; color: var(--text-dim);
-  display: flex; flex-direction: column; gap: 4px; transition: all 0.2s;
-}
-.theme-card:hover { border-color: var(--text-dim); color: var(--text); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
-.theme-card.active { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); box-shadow: 0 2px 12px var(--accent-soft); }
+.theme-card { background: var(--input-bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px 8px; cursor: pointer; text-align: center; color: var(--text-dim); display: flex; flex-direction: column; gap: 4px; transition: all 0.2s; }
+.theme-card.active { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
 
-/* 滑块与其他 */
 .slider-row { display: flex; align-items: center; gap: 12px; }
 .slider-row input[type=range] { flex: 1; accent-color: var(--accent); cursor: pointer; height: 4px; }
 .sval { font-variant-numeric: tabular-nums; font-size: 12px; color: var(--text-dim); min-width: 36px; text-align: right; }
 
 .file-row { display: flex; gap: 8px; align-items: center; }
-.file-label {
-  flex: 1; background: var(--input-bg); border: 1px dashed var(--border); color: var(--text-dim);
-  padding: 10px; border-radius: 8px; cursor: pointer; font-size: 12px; text-align: center; transition: all 0.2s;
-}
-.file-label:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.file-label { flex: 1; background: var(--input-bg); border: 1px dashed var(--border); color: var(--text-dim); padding: 10px; border-radius: 8px; cursor: pointer; font-size: 12px; text-align: center; }
 .file-label input { display: none; }
 .file-clear { background: var(--input-bg); border: 1px solid var(--border); color: var(--text-dim); padding: 9px 12px; border-radius: 8px; cursor: pointer; }
 
-/* 底部操作区 */
 .actions { display: flex; flex-direction: column; gap: 10px; padding-top: 10px; padding-bottom: 20px; }
-.btn-pre, .btn-shot, .btn-exp {
-  flex: 1; background: var(--panel); border: 1px solid var(--border); color: var(--text);
-  padding: 12px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.2s;
-}
-.btn-pre:hover, .btn-shot:hover { border-color: var(--text); }
+.btn-pre, .btn-shot, .btn-exp { flex: 1; background: var(--panel); border: 1px solid var(--border); color: var(--text); padding: 12px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.2s; }
 .btn-exp { background: var(--text); color: #fff; border: none; }
 .btn-exp:hover { background: #000; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
 
-/* 右侧预览区 (苹果设备风) */
-.preview-area {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--preview-bg);
-  position: relative;
-  transition: all 0.3s ease;
-}
-
-/* 动态设备外框 */
-.device-frame {
-  background: var(--device-silver);
-  padding: 12px;
-  box-shadow: 
-    inset 0 0 0 1px #fff,
-    0 0 0 1px var(--device-border), 
-    0 24px 48px rgba(0,0,0,0.12);
-  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-
-/* 手机竖屏状态 */
-.device-frame.mode-mobile {
-  width: 320px;
-  height: 568px; /* 16:9 比例衍生 */
-  border-radius: 36px;
-}
-.device-frame.mode-mobile::before { /* 刘海屏/灵动岛 */
-  content: ''; position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
-  width: 80px; height: 20px; background: #000; border-radius: 10px; z-index: 10;
-}
-
-/* 电脑横屏状态 */
-.device-frame.mode-desktop {
-  width: 640px;
-  height: 360px; /* 16:9 */
-  border-radius: 16px;
-  padding: 8px 8px 24px 8px; /* 底部留出下巴 */
-}
-.device-frame.mode-desktop::after { /* Mac 底座装饰 */
-  content: ''; position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%);
-  width: 120px; height: 12px; background: #d2d2d7; border-radius: 0 0 6px 6px;
-}
-
-#preview {
-  display: block;
-  width: 100%;
-  height: 100%;
-  background: var(--device-screen-bg);
-  border-radius: 24px;
-  object-fit: cover;
-  transition: border-radius 0.4s;
-}
+/* 右侧预览区 */
+.preview-area { flex: 1; display: flex; align-items: center; justify-content: center; background: var(--preview-bg); position: relative; transition: all 0.3s ease; }
+.device-frame { background: var(--device-silver); padding: 12px; box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px #d2d2d7, 0 24px 48px rgba(0,0,0,0.12); transition: all 0.4s; display: flex; align-items: center; justify-content: center; position: relative; }
+.device-frame.mode-mobile { width: 320px; height: 568px; border-radius: 36px; }
+.device-frame.mode-mobile::before { content: ''; position: absolute; top: 16px; left: 50%; transform: translateX(-50%); width: 80px; height: 20px; background: #000; border-radius: 10px; z-index: 10; }
+.device-frame.mode-desktop { width: 640px; height: 360px; border-radius: 16px; padding: 8px 8px 24px 8px; }
+#preview { display: block; width: 100%; height: 100%; background: #111; border-radius: 24px; object-fit: cover; transition: border-radius 0.4s; }
 .device-frame.mode-desktop #preview { border-radius: 8px; }
 
+/* 隐藏逻辑 */
+.hide { display: none !important; }
 </style>
 </head>
 <body>
@@ -232,131 +95,110 @@ textarea:focus, select:focus { outline: none; border-color: var(--accent); backg
 <div class="main" id="main">
   <div class="controls" id="controls">
 
-    <div>
-      <div class="lbl">画面比例 (Device)</div>
-      <div class="btn-group">
-        <button class="btn-toggle active" id="ratioMobile" onclick="setRatio('mobile')">📱 手机竖屏 9:16</button>
-        <button class="btn-toggle" id="ratioDesktop" onclick="setRatio('desktop')">💻 电脑横屏 16:9</button>
+    <div style="display: flex; gap: 16px;">
+      <div style="flex: 1;">
+        <div class="lbl">画面比例</div>
+        <div class="seg-control">
+          <button class="seg-btn active" id="ratioMobile" onclick="setRatio('mobile')">竖屏 9:16</button>
+          <button class="seg-btn" id="ratioDesktop" onclick="setRatio('desktop')">横屏 16:9</button>
+        </div>
+      </div>
+      <div style="flex: 1;">
+        <div class="lbl">文案模式</div>
+        <div class="seg-control">
+          <button class="seg-btn" id="modeEn" onclick="setMode('en')">纯英</button>
+          <button class="seg-btn active" id="modeBi" onclick="setMode('bi')">双语</button>
+        </div>
       </div>
     </div>
 
-    <div>
-      <div class="lbl">英文文案</div>
-      <textarea id="enText" placeholder="输入英文...">Most of the people are just raindrops sliding slowly across the glass window of my life.</textarea>
+    <div id="enBox">
+      <textarea id="enText" placeholder="输入英文...">Perhaps we are all ordinary, yet someone will always see what makes you special.</textarea>
     </div>
-    <div>
-      <div class="lbl">中文翻译</div>
-      <textarea id="cnText" placeholder="输入中文...">大部分人都是我生命的玻璃窗上，缓缓划过的雨水。</textarea>
+    <div id="cnBox">
+      <textarea id="cnText" placeholder="输入中文...">或许我们都普通，但总有人会看到你的特别。</textarea>
     </div>
 
     <div>
-      <div class="lbl">背景风格 (Themes)</div>
+      <div class="lbl">美学滤镜 (Themes)</div>
       <div class="theme-grid">
-        <button class="theme-card active" onclick="setTheme('rain',this)">
-          <div style="font-size: 20px;">🌧️</div><div style="font-size: 11px;">玻璃车窗雨滴</div>
-        </button>
-        <button class="theme-card" onclick="setTheme('ocean',this)">
-          <div style="font-size: 20px;">🌅</div><div style="font-size: 11px;">落日橘海倒影</div>
-        </button>
-        <button class="theme-card" onclick="setTheme('stars',this)">
-          <div style="font-size: 20px;">✨</div><div style="font-size: 11px;">深邃静谧星空</div>
-        </button>
-        <button class="theme-card" onclick="setTheme('pixel',this)">
-          <div style="font-size: 20px;">🐱</div><div style="font-size: 11px;">像素呆萌小猫</div>
-        </button>
+        <button class="theme-card active" onclick="setTheme('rain',this)"><div style="font-size: 18px;">🌧️</div><div>玻璃窗雨滴</div></button>
+        <button class="theme-card" onclick="setTheme('ocean',this)"><div style="font-size: 18px;">🌅</div><div>落日海面倒影</div></button>
+        <button class="theme-card" onclick="setTheme('stars',this)"><div style="font-size: 18px;">✨</div><div>深邃静谧星空</div></button>
+        <button class="theme-card" onclick="setTheme('pixel',this)"><div style="font-size: 18px;">🐱</div><div>像素治愈小猫</div></button>
       </div>
     </div>
 
     <div>
-      <div class="lbl">文字动画效果 (Animations)</div>
-      <div class="btn-group" style="margin-bottom: 8px;">
-        <button class="btn-toggle active" onclick="setAnim('type',this)">⌨️ 打字机</button>
-        <button class="btn-toggle" onclick="setAnim('fade',this)">◎ 缓慢淡入</button>
-        <button class="btn-toggle" onclick="setAnim('rise',this)">↑ 唯美浮现</button>
-      </div>
-      <label style="font-size: 12px; color: var(--text-dim); display: flex; align-items: center; gap: 6px; cursor: pointer;">
-        <input type="checkbox" id="soundToggle" checked> 开启打字机哒哒音效
-      </label>
-    </div>
-
-    <div>
-      <div class="lbl">📷 自定义背景图</div>
+      <div class="lbl">📷 覆盖背景图</div>
       <div class="file-row">
-        <label class="file-label">
-          <span id="fileLabelText">点击上传你的图片或截图</span>
-          <input type="file" id="bgUpload" accept="image/*">
-        </label>
+        <label class="file-label"><span id="fileLabelText">点击上传图片</span><input type="file" id="bgUpload" accept="image/*"></label>
         <button class="file-clear" id="bgClearBtn">清除</button>
       </div>
       <div class="slider-row" style="margin-top:10px;">
-        <span style="font-size:12px; color:var(--text-dim);">背景图透明度:</span>
-        <input type="range" min="0" max="100" value="100" id="bgAlpha">
-        <span class="sval" id="bgAlphaVal">100%</span>
+        <span style="font-size:12px; color:var(--text-dim);">背景图透明度</span>
+        <input type="range" min="0" max="100" value="100" id="bgAlpha"><span class="sval" id="bgAlphaVal">100%</span>
       </div>
     </div>
 
     <div>
-      <div class="lbl">🎨 字体与颜色设置</div>
-      <select id="fontSel" style="margin-bottom: 10px;">
+      <div class="lbl">🎨 字体排印 (Typography)</div>
+      <select id="fontSel" style="margin-bottom: 12px;">
         <option value="Cormorant Garamond">Cormorant Garamond · 优雅复古</option>
+        <option value="DM Serif Display">DM Serif Display · 现代高级</option>
         <option value="Playfair Display">Playfair Display · 经典文学</option>
         <option value="Cinzel">Cinzel · 古典电影</option>
       </select>
+      
+      <div class="seg-control" style="margin-bottom: 12px;">
+        <button class="seg-btn active" onclick="setAnim('cinematic',this)">🎬 电影级显影 (推荐)</button>
+        <button class="seg-btn" onclick="setAnim('type',this)">⌨️ 打字机</button>
+      </div>
+
       <div class="file-row">
         <span style="font-size:12px; color:var(--text-dim);">文字颜色:</span>
-        <input type="color" id="fontColor" value="#ffffff" style="width:100%; height:36px; border-radius:6px; cursor:pointer; border: 1px solid var(--border);">
+        <input type="color" id="fontColor" value="#ffffff" style="width:100%; height:32px; border-radius:6px; cursor:pointer; border: 1px solid var(--border);">
       </div>
     </div>
 
     <div>
-      <div class="lbl">📏 字体大小调整</div>
-      <div class="slider-row">
-        <span style="font-size:12px; color:var(--text-dim); width:50px;">英文</span>
-        <input type="range" min="15" max="60" value="26" id="enSize">
-        <span class="sval" id="enSizeVal">26</span>
+      <div class="lbl">🎛️ 细节调节</div>
+      <div class="slider-row" style="margin-bottom: 8px;">
+        <span style="font-size:12px; color:var(--text-dim); width:50px;">英文大小</span>
+        <input type="range" min="15" max="60" value="30" id="enSize"><span class="sval" id="enSizeVal">30</span>
       </div>
-      <div class="slider-row" style="margin-top: 8px;">
-        <span style="font-size:12px; color:var(--text-dim); width:50px;">中文</span>
-        <input type="range" min="10" max="50" value="18" id="cnSize">
-        <span class="sval" id="cnSizeVal">18</span>
+      <div class="slider-row" style="margin-bottom: 8px;">
+        <span style="font-size:12px; color:var(--text-dim); width:50px;">中文大小</span>
+        <input type="range" min="10" max="50" value="18" id="cnSize"><span class="sval" id="cnSizeVal">18</span>
       </div>
-    </div>
-
-    <div>
-      <div class="lbl">↕️ 文字垂直位置</div>
-      <div class="slider-row">
-        <input type="range" min="10" max="90" value="45" id="yPos">
-        <span class="sval" id="yPosVal">45%</span>
+      <div class="slider-row" style="margin-bottom: 8px;">
+        <span style="font-size:12px; color:var(--text-dim); width:50px;">文字位置</span>
+        <input type="range" min="10" max="90" value="45" id="yPos"><span class="sval" id="yPosVal">45%</span>
       </div>
-    </div>
-    
-    <div>
-      <div class="lbl">🌫️ 模糊毛玻璃底框</div>
-      <div class="slider-row">
-        <input type="range" min="0" max="100" value="0" id="frost">
-        <span class="sval" id="frostVal">0%</span>
+      <div class="slider-row" style="margin-bottom: 8px;">
+        <span style="font-size:12px; color:var(--text-dim); width:50px;">毛玻璃底</span>
+        <input type="range" min="0" max="100" value="0" id="frost"><span class="sval" id="frostVal">0%</span>
       </div>
-    </div>
-
-    <div>
-      <div class="lbl">⏱️ 动态视频时长</div>
+      <div class="slider-row" id="catScaleRow" style="margin-bottom: 8px;">
+        <span style="font-size:12px; color:var(--text-dim); width:50px;">小猫大小</span>
+        <input type="range" min="50" max="200" value="100" id="catScale"><span class="sval" id="catScaleVal">100%</span>
+      </div>
       <div class="slider-row">
-        <input type="range" min="5" max="20" value="10" id="dur">
-        <span class="sval" id="dval">10s</span>
+        <span style="font-size:12px; color:var(--text-dim); width:50px;">视频时长</span>
+        <input type="range" min="5" max="20" value="10" id="dur"><span class="sval" id="dval">10s</span>
       </div>
     </div>
 
     <div class="actions">
       <div class="btn-row">
-        <button class="btn-pre" onclick="restart()">▶ 播放预览</button>
-        <button class="btn-shot" onclick="shootImage()">📸 存为图片</button>
+        <button class="btn-pre" onclick="restart()">▶ 重新播放</button>
+        <button class="btn-shot" onclick="shootImage()">📸 保存图片</button>
       </div>
       <button class="btn-exp" id="expBtn" onclick="doExport()">生成动态视频 (.webm)</button>
     </div>
   </div>
 
   <div class="resizer" id="resizer"></div>
-
   <div class="preview-area">
     <div class="device-frame mode-mobile" id="deviceFrame">
       <canvas id="preview" width="540" height="960"></canvas>
@@ -365,119 +207,75 @@ textarea:focus, select:focus { outline: none; border-color: var(--accent); backg
 </div>
 
 <script>
-// ================= 核心状态变量 =================
+// ================= 核心框架 =================
 const cv = document.getElementById('preview');
 const cx = cv.getContext('2d');
 const off = document.createElement('canvas');
 const ox = off.getContext('2d');
 
-let W = 540, H = 960; // 默认竖屏尺寸
-let theme = 'rain';
-let animType = 'type'; // type, fade, rise
+let W = 540, H = 960; 
+let theme = 'rain', animType = 'cinematic', textMode = 'bi';
 let raf = null, t0 = null;
 let customBg = null;
-let lastPrintedChars = 0; // 用于打字机音效判定
 
-// 音频上下文 (懒加载，需要用户交互触发)
-let audioCtx = null;
-
-// ================= 画布尺寸与设备切换 =================
+// ================= UI 交互逻辑 =================
 function setRatio(mode) {
   document.getElementById('ratioMobile').classList.toggle('active', mode === 'mobile');
   document.getElementById('ratioDesktop').classList.toggle('active', mode === 'desktop');
-  
-  const frame = document.getElementById('deviceFrame');
-  if (mode === 'desktop') {
-    frame.className = 'device-frame mode-desktop';
-    W = 960; H = 540; // 画布设为横屏比例
-  } else {
-    frame.className = 'device-frame mode-mobile';
-    W = 540; H = 960; // 画布设为竖屏比例
-  }
-  cv.width = W; cv.height = H;
-  off.width = W; off.height = H;
+  document.getElementById('deviceFrame').className = `device-frame mode-${mode}`;
+  W = mode === 'desktop' ? 960 : 540;
+  H = mode === 'desktop' ? 540 : 960;
+  cv.width = W; cv.height = H; off.width = W; off.height = H;
   restart();
 }
 
-// ================= 拖拽改变左侧宽度 =================
-(function initResizer() {
-  const resizer = document.getElementById('resizer');
-  const controls = document.getElementById('controls');
-  let isResizing = false;
-
-  resizer.addEventListener('mousedown', (e) => {
-    isResizing = true;
-    resizer.classList.add('dragging');
-    document.body.style.cursor = 'col-resize';
-    document.body.style.userSelect = 'none'; // 防止拖拽时选中文本
-  });
-
-  document.addEventListener('mousemove', (e) => {
-    if (!isResizing) return;
-    // 计算左侧宽度 (最小280，最大600)
-    let newWidth = e.clientX;
-    if (newWidth < 280) newWidth = 280;
-    if (newWidth > 600) newWidth = 600;
-    controls.style.width = `${newWidth}px`;
-  });
-
-  document.addEventListener('mouseup', () => {
-    if (isResizing) {
-      isResizing = false;
-      resizer.classList.remove('dragging');
-      document.body.style.cursor = '';
-      document.body.style.userSelect = '';
-    }
-  });
-})();
-
-// ================= 打字机音效合成 =================
-function playTypeSound() {
-  if(!document.getElementById('soundToggle').checked) return;
-  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  if (audioCtx.state === 'suspended') audioCtx.resume();
-  
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
-  
-  // 模拟机械打字机的短促敲击声
-  osc.type = 'triangle'; 
-  osc.frequency.setValueAtTime(600, audioCtx.currentTime);
-  osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.03);
-  
-  gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.03);
-  
-  osc.connect(gain);
-  gain.connect(audioCtx.destination);
-  osc.start();
-  osc.stop(audioCtx.currentTime + 0.04);
+function setMode(mode) {
+  textMode = mode;
+  document.getElementById('modeEn').classList.toggle('active', mode === 'en');
+  document.getElementById('modeBi').classList.toggle('active', mode === 'bi');
+  document.getElementById('cnBox').classList.toggle('hide', mode === 'en');
+  restart();
 }
 
-// ================= 数据定义 =================
+function setTheme(th, btn) {
+  theme = th;
+  document.querySelectorAll('.theme-card').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  // 控制小猫比例调节器的显示与隐藏
+  document.getElementById('catScaleRow').style.display = th === 'pixel' ? 'flex' : 'none';
+  restart();
+}
+
+function setAnim(an, btn) {
+  animType = an;
+  const btns = btn.parentElement.querySelectorAll('.seg-btn');
+  btns.forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  restart();
+}
+
+// 拖拽宽度
+(function initResizer() {
+  const resizer = document.getElementById('resizer'), controls = document.getElementById('controls');
+  let isResizing = false;
+  resizer.addEventListener('mousedown', () => { isResizing = true; document.body.style.cursor = 'col-resize'; document.body.style.userSelect = 'none'; });
+  document.addEventListener('mousemove', (e) => { if (isResizing) controls.style.width = `${Math.max(320, Math.min(600, e.clientX))}px`; });
+  document.addEventListener('mouseup', () => { isResizing = false; document.body.style.cursor = ''; document.body.style.userSelect = ''; });
+})();
+
+// ================= 美学数据 =================
 const bokehLights = [
-  {x: 0.2, y: 0.6, r: 40, col: 'rgba(255, 50, 50, 0.7)'},   
-  {x: 0.8, y: 0.55, r: 50, col: 'rgba(255, 60, 60, 0.6)'},  
-  {x: 0.4, y: 0.5, r: 35, col: 'rgba(255, 200, 100, 0.5)'}, 
-  {x: 0.6, y: 0.65, r: 60, col: 'rgba(200, 220, 255, 0.4)'}
+  {x: 0.2, y: 0.6, r: 40, col: 'rgba(255, 50, 50, 0.5)'},   
+  {x: 0.8, y: 0.55, r: 50, col: 'rgba(255, 60, 60, 0.4)'},  
+  {x: 0.4, y: 0.5, r: 35, col: 'rgba(255, 200, 100, 0.3)'}, 
+  {x: 0.6, y: 0.65, r: 60, col: 'rgba(200, 220, 255, 0.2)'}
 ];
-const staticDrops = Array.from({length: 120}, () => ({
-  x: Math.random(), y: Math.random(), r: 1 + Math.random() * 2
-}));
-// 雨滴改得更慢、更长、更自然
-const movingDrops = Array.from({length: 15}, () => ({
-  x: Math.random(), y: Math.random(), r: 2 + Math.random() * 3,
-  speed: 0.3 + Math.random() * 0.8, trail: [] 
-}));
+const staticDrops = Array.from({length: 120}, () => ({ x: Math.random(), y: Math.random(), r: 1 + Math.random() * 2 }));
+const movingDrops = Array.from({length: 12}, () => ({ x: Math.random(), y: Math.random(), r: 2 + Math.random() * 2, speed: 0.2 + Math.random() * 0.4, trail: [] }));
+const waves = Array.from({length: 12}, (_, i) => ({ yOffset: i*15, amp: 2 + i*0.8, freq: 0.015 + i*0.005, phase: Math.random()*Math.PI*2 }));
+const stars = Array.from({length:150},()=>({ x:Math.random(),y:Math.random(), r:0.5+Math.random()*1.5, ph:Math.random()*Math.PI*2, spd:0.01+Math.random()*0.03 }));
 
-const waves = Array.from({length: 12}, (_, i) => ({
-  yOffset: i*15, amp: 2 + i*0.8, freq: 0.015 + i*0.005, phase: Math.random()*Math.PI*2
-}));
-const stars = Array.from({length:150},()=>({
-  x:Math.random(),y:Math.random(), r:0.5+Math.random()*1.5, ph:Math.random()*Math.PI*2, spd:0.02+Math.random()*0.04
-}));
-
-// 可爱小猫
+// 猫咪数据
 const CAT = [
   [0,0,1,1,0,0,0,0,0,1,1,0,0],
   [0,1,2,4,1,0,0,0,1,4,3,1,0],
@@ -494,85 +292,78 @@ const CAT = [
 ];
 const catPalette = { 1:'#2b221e', 2:'#ffffff', 3:'#f4a261', 4:'#ffb4a2', 5:'#111111' };
 
-
-// ================= 背景绘制逻辑 =================
+// ================= 画布渲染逻辑 =================
 
 function drawRain(t) {
   const bg = cx.createLinearGradient(0, 0, 0, H);
-  bg.addColorStop(0, '#1a1f2b'); bg.addColorStop(0.5, '#0d1118'); bg.addColorStop(1, '#050608');
+  bg.addColorStop(0, '#121620'); bg.addColorStop(0.5, '#0a0d14'); bg.addColorStop(1, '#030406');
   cx.fillStyle = bg; cx.fillRect(0, 0, W, H);
 
-  cx.save(); cx.filter = 'blur(25px)';
+  cx.save(); cx.filter = 'blur(30px)';
   bokehLights.forEach(b => {
-    const wx = b.x*W + Math.sin(t*0.0005 + b.y*H)*20; // 极其缓慢的散景移动
+    const wx = b.x*W + Math.sin(t*0.0003 + b.y*H)*25; // 极慢晃动
     cx.beginPath(); cx.arc(wx, b.y*H, b.r* (W/540), 0, Math.PI*2); cx.fillStyle = b.col; cx.fill();
   });
   cx.restore();
 
   cx.fillStyle = 'rgba(20, 30, 40, 0.15)'; cx.fillRect(0, 0, W, H);
-
   staticDrops.forEach(d => drawDroplet(d.x*W, d.y*H, d.r));
 
   movingDrops.forEach(d => {
     d.trail.push({x: d.x*W, y: d.y*H});
-    if(d.trail.length > 15) d.trail.shift(); // 拖尾拉长
+    if(d.trail.length > 20) d.trail.shift(); 
     
-    // 极其缓慢的下滑速度，并且有停顿感 (利用sin)
-    const currentSpeed = d.speed * (0.5 + Math.sin(t*0.002 + d.x*100)*0.5); 
+    const currentSpeed = d.speed * (0.3 + Math.sin(t*0.001 + d.x*100)*0.7); // 停顿感
     d.y += currentSpeed / H;
-    d.x += Math.sin(d.y * 50) * 0.0002; // 微小蜿蜒
+    d.x += Math.sin(d.y * 30) * 0.0001; 
 
-    if(d.y > 1.05) {
-      d.y = -0.05; d.x = Math.random(); d.trail = [];
-    }
-
+    if(d.y > 1.05) { d.y = -0.05; d.x = Math.random(); d.trail = []; }
     if(d.trail.length > 0) {
       cx.beginPath(); cx.moveTo(d.trail[0].x, d.trail[0].y);
       for(let i=1; i<d.trail.length; i++) cx.lineTo(d.trail[i].x, d.trail[i].y);
-      cx.strokeStyle = 'rgba(150, 180, 200, 0.15)'; cx.lineWidth = d.r; cx.lineCap = 'round'; cx.stroke();
+      cx.strokeStyle = 'rgba(150, 180, 200, 0.1)'; cx.lineWidth = d.r; cx.lineCap = 'round'; cx.stroke();
     }
     drawDroplet(d.x*W, d.y*H, d.r * 1.2);
   });
 }
-
 function drawDroplet(x, y, r) {
-  cx.beginPath(); cx.arc(x, y, r, 0, Math.PI*2); cx.fillStyle = 'rgba(5, 10, 15, 0.3)'; cx.fill();
-  cx.beginPath(); cx.arc(x - r*0.3, y - r*0.3, r*0.3, 0, Math.PI*2); cx.fillStyle = 'rgba(255, 255, 255, 0.7)'; cx.fill();
+  cx.beginPath(); cx.arc(x, y, r, 0, Math.PI*2); cx.fillStyle = 'rgba(5, 10, 15, 0.4)'; cx.fill();
+  cx.beginPath(); cx.arc(x - r*0.3, y - r*0.3, r*0.3, 0, Math.PI*2); cx.fillStyle = 'rgba(255, 255, 255, 0.6)'; cx.fill();
 }
 
 function drawOcean(t) {
   const horizon = H * 0.55;
   const sky = cx.createLinearGradient(0, 0, 0, horizon);
-  sky.addColorStop(0, '#2b1b3d'); sky.addColorStop(0.4, '#8c3a59'); sky.addColorStop(0.7, '#e06c75'); sky.addColorStop(1, '#f5c990');
+  sky.addColorStop(0, '#1c122b'); sky.addColorStop(0.4, '#732c45'); sky.addColorStop(0.7, '#c25560'); sky.addColorStop(1, '#e3b881');
   cx.fillStyle = sky; cx.fillRect(0, 0, W, horizon);
 
-  const sunX = W * 0.5, sunY = horizon - 40;
+  const sunX = W * 0.5, sunY = horizon - 35;
   cx.beginPath(); cx.arc(sunX, sunY, 35, 0, Math.PI*2); cx.fillStyle = '#fffae6';
-  cx.shadowBlur = 40; cx.shadowColor = '#ffc04d'; cx.fill(); cx.shadowBlur = 0;
+  cx.shadowBlur = 50; cx.shadowColor = '#ffb347'; cx.fill(); cx.shadowBlur = 0;
 
   const sea = cx.createLinearGradient(0, horizon, 0, H);
-  sea.addColorStop(0, '#4a2545'); sea.addColorStop(0.3, '#2d1b4e'); sea.addColorStop(1, '#0f0c29');
+  sea.addColorStop(0, '#361b32'); sea.addColorStop(0.3, '#1d1136'); sea.addColorStop(1, '#09071c');
   cx.fillStyle = sea; cx.fillRect(0, horizon, W, H - horizon);
 
   waves.forEach((w, i) => {
-    cx.beginPath(); cx.strokeStyle = `rgba(255, 200, 120, ${0.4 - i*0.03})`; cx.lineWidth = 1.5;
+    cx.beginPath(); cx.strokeStyle = `rgba(255, 180, 100, ${0.3 - i*0.02})`; cx.lineWidth = 1;
     const wy = horizon + w.yOffset;
     for(let x = 0; x <= W; x += 5) {
-      const yOffset = Math.sin(x * w.freq + t * 0.002 + w.phase) * w.amp;
+      const yOffset = Math.sin(x * w.freq + t * 0.0015 + w.phase) * w.amp;
       if (x === 0) cx.moveTo(x, wy + yOffset); else cx.lineTo(x, wy + yOffset);
     }
     cx.stroke();
-    const refW = 80 - i*4; const refX = sunX - refW/2 + Math.sin(t*0.002 + i)*10;
-    cx.fillStyle = `rgba(255, 240, 180, ${0.5 - i*0.03})`; cx.fillRect(refX, wy - 1, refW, 2);
+    const refW = 60 - i*3; const refX = sunX - refW/2 + Math.sin(t*0.0015 + i)*10;
+    cx.fillStyle = `rgba(255, 220, 150, ${0.4 - i*0.03})`; cx.fillRect(refX, wy, refW, 1.5);
   });
 }
 
 function drawStars(t) {
   const bg = cx.createLinearGradient(0,0,0,H);
-  bg.addColorStop(0,'#050914'); bg.addColorStop(1,'#1a1525');
+  bg.addColorStop(0,'#04060f'); bg.addColorStop(1,'#110e1c');
   cx.fillStyle=bg; cx.fillRect(0,0,W,H);
   stars.forEach(s=>{
-    s.ph+=s.spd; const a=0.3+Math.sin(s.ph)*0.7;
+    s.ph+=s.spd; const a=0.2+Math.sin(s.ph)*0.8;
     cx.globalAlpha=Math.max(0,a); cx.fillStyle='#fff';
     cx.beginPath(); cx.arc(s.x*W, s.y*H, s.r, 0, Math.PI*2); cx.fill();
   });
@@ -581,15 +372,21 @@ function drawStars(t) {
 
 function drawPixel(t) {
   const bg = cx.createLinearGradient(0,0,0,H);
-  bg.addColorStop(0,'#a3b18a'); bg.addColorStop(1,'#dad7cd');
+  bg.addColorStop(0,'#8ca179'); bg.addColorStop(1,'#c2c1b8');
   cx.fillStyle=bg; cx.fillRect(0,0,W,H);
 
-  const sc = Math.min(W, H) * 0.035; 
+  // 动态缩放猫咪
+  const scalePercent = parseInt(document.getElementById('catScale').value) / 100;
+  const baseSc = Math.min(W, H) * 0.035; 
+  const sc = baseSc * scalePercent;
+  
   const cW = CAT[0].length * sc, cH = CAT.length * sc;
-  const cX = (W-cW)/2, cY = H*0.65 + Math.sin(t*0.002)*10;
+  const cX = (W-cW)/2;
+  // 锚定在底部边缘
+  const cY = H - cH - (H*0.08) + Math.sin(t*0.002)*8;
 
   cx.fillStyle = 'rgba(0,0,0,0.1)'; cx.beginPath();
-  cx.ellipse(cX + cW/2, cY + cH, cW*0.4, 10, 0, 0, Math.PI*2); cx.fill();
+  cx.ellipse(cX + cW/2, cY + cH, cW*0.4, 8*scalePercent, 0, 0, Math.PI*2); cx.fill();
 
   CAT.forEach((row, ry) => row.forEach((px, rx) => {
     if(px === 0) return;
@@ -615,17 +412,15 @@ function drawFrostedBackdrop(bx, by, bw, bh) {
   const frostVal = parseInt(document.getElementById('frost').value);
   if (frostVal <= 0) return;
   const str = frostVal / 100;
-
   ox.clearRect(0,0,W,H); ox.save(); ox.filter = `blur(${5 + str*15}px)`; ox.drawImage(cv, 0, 0); ox.restore();
-
   cx.save(); cx.beginPath(); cx.roundRect(bx, by, bw, bh, 16); cx.clip();
-  cx.drawImage(off, 0, 0); cx.fillStyle = `rgba(0,0,0,${str*0.4})`; cx.fill(); cx.restore();
+  cx.drawImage(off, 0, 0); cx.fillStyle = `rgba(0,0,0,${str*0.35})`; cx.fill(); cx.restore();
 }
 
-// ================= 排版与动画 =================
+// ================= 排版与顶级动画 =================
 function drawText(elapsed) {
   const enText = document.getElementById('enText').value;
-  const cnText = document.getElementById('cnText').value;
+  const cnText = textMode === 'bi' ? document.getElementById('cnText').value : '';
   const fontName = document.getElementById('fontSel').value;
   const textColor = document.getElementById('fontColor').value;
   const enSize = parseInt(document.getElementById('enSize').value);
@@ -657,30 +452,20 @@ function drawText(elapsed) {
   drawFrostedBackdrop((W - maxW - 30)/2, startY - enSize, maxW + 30, totalH + enSize + 20);
 
   const dur = parseInt(document.getElementById('dur').value) * 1000;
-  const prog = Math.min(elapsed / (dur * 0.6), 1); // 动画占总时长 60%
+  const prog = Math.min(elapsed / (dur * 0.5), 1); 
 
   cx.textAlign = 'center';
   cx.fillStyle = textColor;
-  cx.shadowBlur = 6; cx.shadowColor = 'rgba(0,0,0,0.4)';
+  cx.shadowBlur = 8; cx.shadowColor = 'rgba(0,0,0,0.5)';
 
-  // 动画计算逻辑
   let curY = startY;
   
   if (animType === 'type') {
-    // ---- 打字机效果 ----
-    const fullText = (enLines.join('') + cnLines.join('')).replace(/\s/g, ''); // 统计所有非空字符
-    const totalChars = fullText.length;
+    // ---- 纯视觉打字机 (无声) ----
+    const totalChars = (enLines.join('') + cnLines.join('')).replace(/\s/g, '').length;
     const currentVisChars = Math.floor(prog * totalChars);
-    
-    // 触发音效
-    if (currentVisChars > lastPrintedChars && currentVisChars < totalChars) {
-      playTypeSound();
-      lastPrintedChars = currentVisChars;
-    }
-
     let charCount = 0;
     
-    // 渲染英文
     cx.font = enFont;
     enLines.forEach(line => {
       let printedLine = '';
@@ -689,19 +474,11 @@ function drawText(elapsed) {
         if(char !== ' ') charCount++;
       }
       cx.fillText(printedLine, W/2, curY);
-      // 光标闪烁
-      if(charCount === currentVisChars && prog < 1 && Math.floor(elapsed/300)%2===0) {
-        const tw = cx.measureText(printedLine).width;
-        cx.fillText('_', W/2 + tw/2 + 5, curY);
-      }
       curY += lh;
     });
 
     curY += 16;
-    
-    // 渲染中文
-    cx.font = cnFont;
-    cx.fillStyle = textColor + 'dd';
+    cx.font = cnFont; cx.fillStyle = textColor + 'dd';
     cnLines.forEach(line => {
       let printedLine = '';
       for(let char of line) {
@@ -709,49 +486,48 @@ function drawText(elapsed) {
         if(char !== ' ') charCount++;
       }
       cx.fillText(printedLine, W/2, curY);
-      if(charCount === currentVisChars && prog < 1 && Math.floor(elapsed/300)%2===0) {
-        const tw = cx.measureText(printedLine).width;
-        cx.fillText('_', W/2 + tw/2 + 5, curY);
-      }
       curY += cnLh;
     });
 
   } else {
-    // ---- 淡入 / 浮现效果 ----
+    // ---- 电影级显影 (Blur to Focus + Fade) ----
     cx.font = enFont;
     enLines.forEach((line, i) => {
       const lineProg = Math.max(0, Math.min(1, prog * 1.5 - i * 0.2)); 
+      cx.save();
       cx.globalAlpha = lineProg;
-      const floatY = animType === 'rise' ? (1 - lineProg) * 20 : 0;
-      cx.fillText(line, W/2, curY + floatY);
+      // 核心特效：未显影完全时带有强模糊，随进度变得清晰
+      const blurAmount = (1 - lineProg) * 8; 
+      if(blurAmount > 0) cx.filter = `blur(${blurAmount}px)`;
+      cx.fillText(line, W/2, curY);
+      cx.restore();
       curY += lh;
     });
 
     curY += 16;
-    cx.font = cnFont;
-    cx.fillStyle = textColor + 'dd'; 
+    cx.font = cnFont; cx.fillStyle = textColor + 'cc'; 
     cnLines.forEach((line, i) => {
       const lineProg = Math.max(0, Math.min(1, prog * 1.5 - 0.5 - i * 0.2)); 
+      cx.save();
       cx.globalAlpha = lineProg;
-      const floatY = animType === 'rise' ? (1 - lineProg) * 20 : 0;
-      cx.fillText(line, W/2, curY + floatY);
+      const blurAmount = (1 - lineProg) * 8; 
+      if(blurAmount > 0) cx.filter = `blur(${blurAmount}px)`;
+      cx.fillText(line, W/2, curY);
+      cx.restore();
       curY += cnLh;
     });
   }
 
-  cx.globalAlpha = 1; cx.shadowBlur = 0;
+  cx.globalAlpha = 1; cx.shadowBlur = 0; cx.filter = 'none';
 }
 
-// ================= 主循环与事件绑定 =================
 function render(ts) {
   if (!t0) t0 = ts;
   const el = ts - t0;
-  
   if(theme === 'rain') drawRain(el);
   else if(theme === 'ocean') drawOcean(el);
   else if(theme === 'stars') drawStars(el);
   else if(theme === 'pixel') drawPixel(el);
-  
   drawCustomBg();
   drawText(el);
   raf = requestAnimationFrame(render);
@@ -759,34 +535,13 @@ function render(ts) {
 
 function restart() {
   if (raf) cancelAnimationFrame(raf);
-  t0 = null;
-  lastPrintedChars = 0;
-  
-  // 尝试解锁音频
-  if (document.getElementById('soundToggle').checked && !audioCtx) {
-     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  }
-  
-  raf = requestAnimationFrame(render);
+  t0 = null; raf = requestAnimationFrame(render);
 }
 
-function setTheme(th, btn) {
-  theme = th;
-  document.querySelectorAll('.theme-card').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  restart();
-}
+// ================= 事件绑定 =================
+document.getElementById('catScaleRow').style.display = 'none'; // 默认隐藏猫咪缩放
 
-function setAnim(an, btn) {
-  animType = an;
-  document.querySelectorAll('.btn-toggle').forEach(b => {
-    if(b.innerText.includes('打字') || b.innerText.includes('淡入') || b.innerText.includes('浮现')) b.classList.remove('active');
-  });
-  btn.classList.add('active');
-  restart();
-}
-
-['yPos','frost','bgAlpha','enSize','cnSize','dur'].forEach(id => {
+['yPos','frost','bgAlpha','enSize','cnSize','catScale','dur'].forEach(id => {
   document.getElementById(id).addEventListener('input', e => {
     let suffix = id === 'dur' ? 's' : (id === 'enSize' || id === 'cnSize' ? '' : '%');
     document.getElementById(id + 'Val').textContent = e.target.value + suffix;
@@ -800,10 +555,10 @@ document.getElementById('fontSel').addEventListener('change', restart);
 document.getElementById('bgUpload').addEventListener('change', (e) => {
   const f = e.target.files[0]; if (!f) return;
   const img = new Image();
-  img.onload = () => { customBg = img; document.getElementById('fileLabelText').textContent = '✓ ' + f.name; restart(); };
+  img.onload = () => { customBg = img; document.getElementById('fileLabelText').textContent = '✓ 已应用背景'; restart(); };
   img.src = URL.createObjectURL(f);
 });
-document.getElementById('bgClearBtn').addEventListener('click', () => { customBg = null; document.getElementById('fileLabelText').textContent = '点击上传你的图片或截图'; restart(); });
+document.getElementById('bgClearBtn').addEventListener('click', () => { customBg = null; document.getElementById('fileLabelText').textContent = '点击上传图片'; restart(); });
 
 function shootImage() {
   const a = document.createElement('a'); a.href = cv.toDataURL('image/png'); a.download = `Card_${Date.now()}.png`; a.click();
@@ -814,7 +569,6 @@ function doExport() {
   const btn = document.getElementById('expBtn');
   if (!window.MediaRecorder) return alert('不支持录制，请使用 Chrome/Edge');
   btn.disabled = true; restart();
-  
   const stream = cv.captureStream(30);
   const rec = new MediaRecorder(stream, {mimeType: 'video/webm;codecs=vp9'});
   const chunks = [];
@@ -824,7 +578,6 @@ function doExport() {
     a.download = `Video_${Date.now()}.webm`; a.click();
     btn.disabled = false; btn.textContent = '生成动态视频 (.webm)';
   };
-  
   let sec = 0; const tick = setInterval(() => { btn.textContent = `正在录制... ${++sec} / ${dur} 秒`; }, 1000);
   rec.start(100); setTimeout(() => { clearInterval(tick); rec.stop(); }, dur * 1000);
 }
